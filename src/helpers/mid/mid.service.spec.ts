@@ -17,11 +17,8 @@ describe('MidService', () => {
   });
 
   it('it should be 19 length', () => {
-
     const mid = service.MID();
     expect(mid.length).toBeDefined();
     expect(mid.length).toBe(19);
-
-  })
-
+  });
 });

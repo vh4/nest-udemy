@@ -1,4 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, ForbiddenException, HttpStatus, Inject } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  BadRequestException,
+  Catch,
+  ExceptionFilter,
+  ForbiddenException,
+  HttpStatus,
+  Inject,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { ErrorFormatService } from 'src/helpers/error-format/error-format.service';
@@ -9,28 +17,29 @@ import { Logger } from 'winston';
 export class ErrorFilter<T> implements ExceptionFilter {
   constructor(
     @Inject(WINSTON_MODULE_PROVIDER) private logger: Logger,
-    private readonly format:MessageService
-    )
-  {}
+    private readonly format: MessageService,
+  ) {}
   catch(exception: any, host: ArgumentsHost) {
     const http = host.switchToHttp();
     const req = http.getRequest<Request>();
     const res = http.getResponse<Response>();
 
     let StatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
-    let message:object;
+    let message: object;
 
-    if(exception instanceof ErrorFormatService){
+    if (exception instanceof ErrorFormatService) {
       StatusCode = HttpStatus.BAD_REQUEST;
       message = this.format.FormatError();
-    }
-    else if(exception instanceof TypeError){
+    } else if (exception instanceof TypeError) {
       StatusCode = HttpStatus.BAD_REQUEST;
       message = this.format.FormatError();
-    }else if(exception instanceof ForbiddenException){
+    } else if (exception instanceof ForbiddenException) {
       StatusCode = HttpStatus.FORBIDDEN;
-      message = this.format.TransactionNotPermittedToTerminal()
-    }else{
+      message = this.format.TransactionNotPermittedToTerminal();
+    } else if (exception instanceof BadRequestException) {
+      StatusCode = HttpStatus.BAD_REQUEST;
+      message = this.format.FormatError();
+    } else {
       StatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       message = this.format.SystemMalfunction();
     }
@@ -48,6 +57,5 @@ export class ErrorFilter<T> implements ExceptionFilter {
       ...req.body,
       timestamp: req.timestamp,
     });
-
   }
 }

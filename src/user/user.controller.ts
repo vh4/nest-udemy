@@ -1,19 +1,29 @@
-import { Body, Controller, Header, HttpCode, Post } from '@nestjs/common';
+import { Body, Controller, Header, HttpCode, Post, Req } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.dto';
+import { UserService } from './user.service';
+import { Request } from 'express';
+import { MessageService } from 'src/helpers/message/message.service';
 
-@Controller('user')
+@Controller('/api/user')
 export class UserController {
-	constructor(){}
+  constructor(
+    private readonly user: UserService,
+    private readonly message: MessageService,
+  ) {}
 
-	@Post('/api/user')
-	@HttpCode(200)
-	@Header('Content-Type', 'applciation/json')
-	async create(
-		@Body() data:CreateUserDto
-	):Promise<Record<string, string|number>>{
-
-		return {}
-
-	}
-
+  @Post()
+  @HttpCode(200)
+  @Header('Content-Type', 'application/json')
+  async create(
+    @Body() data: CreateUserDto,
+    @Req() req: Request,
+  ): Promise<Record<string, string | number | Date>> {
+    const response = await this.user.create(data);
+    const message = this.message.Success();
+    req.response = response;
+    return {
+      ...message,
+      ...response,
+    };
+  }
 }

@@ -17,19 +17,19 @@ export class ErrorFormatService {
   }
 }
 
-export class MainError extends Error{
-	public statusCode:number;
-	public messageName:string;
-	public messageCode:string;
+export class MainError extends Error {
+  public statusCode: number;
+  public messageName: string;
+  public messageCode: string;
 
-	constructor(statusCode:number, messageCode:string, messageName:string){
-		super(messageName);
-		this.statusCode  = statusCode;
-		this.messageCode = messageCode;
-		this.messageName = messageName;
-		this.name = this.constructor.name;
-		if (Error.captureStackTrace) {
-			Error.captureStackTrace(this, this.constructor);
-		}
-	}
+  constructor(statusCode: number, messageCode: string, messageName: string) {
+    super(messageName);
+    this.statusCode = statusCode;
+    this.messageCode = messageCode;
+    this.messageName = messageName;
+    this.name = this.constructor.name;
+    if (Error.captureStackTrace) {
+      Error.captureStackTrace(this, this.constructor);
+    }
+  }
 }
