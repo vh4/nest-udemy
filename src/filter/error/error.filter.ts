@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { ErrorFormatService } from 'src/helpers/error-format/error-format.service';
+import { ErrorFormatService, MainError } from 'src/helpers/error-format/error-format.service';
 import { MessageService } from 'src/helpers/message/message.service';
 import { Logger } from 'winston';
 
@@ -27,9 +27,12 @@ export class ErrorFilter<T> implements ExceptionFilter {
     let StatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
     let message: object;
 
-    if (exception instanceof ErrorFormatService) {
+    if (exception instanceof MainError) {
       StatusCode = HttpStatus.BAD_REQUEST;
-      message = this.format.FormatError();
+      message = {
+        responseCode:exception.messageCode,
+        responseMessage:exception.messageName
+      };
     } else if (exception instanceof TypeError) {
       StatusCode = HttpStatus.BAD_REQUEST;
       message = this.format.FormatError();

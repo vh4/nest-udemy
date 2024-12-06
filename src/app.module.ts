@@ -20,6 +20,7 @@ import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ErrorFilter } from './filter/error/error.filter';
 import { TimeInterceptor } from './interceptor/time/time.interceptor';
 import { MidMiddleware } from './middleware/mid/mid.middleware';
+import { SuccessInterceptor } from './interceptor/success/success.interceptor';
 
 @Module({
   imports: [
@@ -64,6 +65,10 @@ import { MidMiddleware } from './middleware/mid/mid.middleware';
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: SuccessInterceptor,
     },
     {
       provide: APP_FILTER,
