@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, Length } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, Length, Matches } from 'class-validator';
 
 export interface CreateUserInterface {
   id?:string;
@@ -27,6 +27,7 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @Length(8, 25)
+  @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/)
   password: string;
 
   @IsOptional()
