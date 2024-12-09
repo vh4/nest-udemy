@@ -21,6 +21,9 @@ import { ErrorFilter } from './filter/error/error.filter';
 import { TimeInterceptor } from './interceptor/time/time.interceptor';
 import { MidMiddleware } from './middleware/mid/mid.middleware';
 import { SuccessInterceptor } from './interceptor/success/success.interceptor';
+import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -54,6 +57,7 @@ import { SuccessInterceptor } from './interceptor/success/success.interceptor';
     TaskModule,
     HelpersModule,
     UserModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [

@@ -52,7 +52,7 @@ export class ErrorFilter<T> implements ExceptionFilter {
     );
     this.logger.error(`error     / ${req.mid} -> ${exception.message}`);
     this.logger.error(
-      `response  / ${req.mid} -> ${JSON.stringify(exception.response.message ?? '-')}`,
+      `response  / ${req.mid} -> ${JSON.stringify(exception.response?? '-')}`,
     );
 
     res.status(StatusCode).json({

@@ -1,8 +1,9 @@
-import { Body, Controller, Delete, Get, Header, HttpCode, Param, Post, Req } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Header, HttpCode, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateUserDto, CreateUserInterface, UpdateUserDto } from './dto/create.dto';
 import { UserService } from './user.service';
 import { Request, Response } from 'express';
 import { MessageService } from 'src/helpers/message/message.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('/api/user/')
 export class UserController {
@@ -30,6 +31,7 @@ export class UserController {
   @Get('/')
   @HttpCode(200)
   @Header('Content-Type', 'application/json')
+  @UseGuards(AuthGuard())
   async all(): Promise<Record<string, CreateUserInterface[]|string>>{
     const response = await this.user.all();
     const message = this.message.Success();
