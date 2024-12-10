@@ -6,6 +6,7 @@ import { ErrorFormatService } from 'src/helpers/error-format/error-format.servic
 import { AuthRepository } from './auth.repository';
 import { DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
+import { PassportModule } from '@nestjs/passport';
 
 describe('AuthController', () => {
   let controller: AuthController;
@@ -17,6 +18,7 @@ describe('AuthController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
+      imports:[PassportModule.register({defaultStrategy:'jwt'})],
       controllers: [AuthController],
       providers:[AuthService, MessageService, ErrorFormatService, AuthRepository, JwtService, {
         provide:DataSource,

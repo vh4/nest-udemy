@@ -17,4 +17,11 @@ export class AuthRepository extends Repository<User>{
 			},
 		})
 	}
+	async findByUsername(username:string): Promise<UserAuth>{
+		return this.findOne({
+			where:{
+				username:username
+			},
+		})
+	}
 }

@@ -6,10 +6,11 @@ import {
   ForbiddenException,
   HttpStatus,
   Inject,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { ErrorFormatService, MainError } from 'src/helpers/error-format/error-format.service';
+import { MainError } from 'src/helpers/error-format/error-format.service';
 import { MessageService } from 'src/helpers/message/message.service';
 import { Logger } from 'winston';
 
@@ -42,6 +43,9 @@ export class ErrorFilter<T> implements ExceptionFilter {
     } else if (exception instanceof BadRequestException) {
       StatusCode = HttpStatus.BAD_REQUEST;
       message = this.format.FormatError();
+    } else if (exception instanceof UnauthorizedException) {
+      StatusCode = HttpStatus.UNAUTHORIZED;
+      message = this.format.TransactionNotPermittedToTerminal();
     } else {
       StatusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       message = this.format.SystemMalfunction();

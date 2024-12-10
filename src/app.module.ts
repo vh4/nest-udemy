@@ -8,7 +8,7 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './task/task.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WinstonModule } from 'nest-winston';
 import { HelpersModule } from './helpers/helpers.module';
 import * as winston from 'winston';
@@ -22,13 +22,12 @@ import { TimeInterceptor } from './interceptor/time/time.interceptor';
 import { MidMiddleware } from './middleware/mid/mid.middleware';
 import { SuccessInterceptor } from './interceptor/success/success.interceptor';
 import { AuthModule } from './auth/auth.module';
-import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      // envFilePath:[`.env.stage.${process.env.STAGE}`]
     }),
     WinstonModule.forRoot({
       transports: [
@@ -42,16 +41,22 @@ import { JwtModule } from '@nestjs/jwt';
         }),
       ],
     }),
-    TypeOrmModule.forRoot({
-      type: process.env.DRIVER as any,
-      host: process.env.HOST,
-      port: parseInt(process.env.PORT, 10),
-      username: process.env.USERNAME,
-      password: process.env.PASSWORD,
-      database: process.env.DATABASE,
-      autoLoadEntities: true,
-      synchronize: true,
-      entities: [User],
+    TypeOrmModule.forRootAsync({
+      imports:[ConfigModule],
+      inject:[ConfigService],
+      useFactory: async (configService:ConfigService) => {
+        return {          
+          type: configService.get('DRIVER') as any,
+          host: configService.get('HOST'),
+          port: parseInt(process.env.PORT, 10),
+          username: configService.get('USERNAME'),
+          password: process.env.PASSWORD,
+          database: process.env.DATABASE,
+          autoLoadEntities: true,
+          synchronize: true,
+          entities: [User],
+        }
+      }
     }),
 
     TaskModule,
